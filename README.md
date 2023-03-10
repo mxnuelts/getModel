@@ -35,7 +35,7 @@ Se evaluaron cuatro modelos: Regresión Logística, Decision Tree Classifier, Ra
 2. Decision Tree Classifier (AUC: 0.593)
 3. LightGBM (AUC: 0.561)
 4. Random Forest (AUC: 0.560)
-Se eligió el AUC como métrica porque permite saber si el modelo discrimina los positivos y negativos y, además, se utiliza la probabilidad para identificar propensiones y priorizar perfiles según el modelo.
+<br>Se eligió el AUC como métrica porque permite saber si el modelo discrimina los positivos y negativos y, además, se utiliza la probabilidad para identificar propensiones y priorizar perfiles según el modelo.
 
 ## Comparativo de Modelos por AUC
 
