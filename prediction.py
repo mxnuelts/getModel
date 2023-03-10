@@ -10,8 +10,7 @@ import lightgbm as lgb
 from sklearn.preprocessing import StandardScaler,MinMaxScaler
 from sklearn.model_selection import train_test_split
 import pickle
-#sys.path.insert(0, "D:\Datos de Usuario\rosorio\Documents\Python Scripts\Rappi\Prueba Técnica Python_202205")
-from metrics import R2_score,RMSLE,RMSE,MAE
+from metrics import Auc, LogLoss, RecallAtPrecision, PrecisionAtRecall, RecallAtFpr
 
 import warnings
 
@@ -34,21 +33,6 @@ class PrediccionModelo(object):
     def load_data(self, table):
         df = pd.read_sql_query(table)
         print(f"Dataframe shape: {df.shape}")
-
-        # preprocessing
-        df['pickup_datetime'] = pd.to_datetime(df['pickup_datetime'])
-        df['dropoff_datetime'] = pd.to_datetime(df['dropoff_datetime'])
-
-        df['pickup_day'] = df['pickup_datetime'].dt.day
-        df['pickup_month'] = df['pickup_datetime'].dt.month
-        df['pickup_hour'] = df['pickup_datetime'].dt.hour
-        df['pickup_min'] = df['pickup_datetime'].dt.minute
-        df['pickup_weekday'] = df['pickup_datetime'].dt.weekday
-
-        df['dropoff_min'] = df['dropoff_datetime'].dt.minute
-        df['dropoff_hour'] = df['dropoff_datetime'].dt.hour
-        df['log_trip_duration']=np.log(df['trip_duration'])
-        df=pd.get_dummies(df,prefix=['vendor_id','store_and_fwd_flag'], columns = ['vendor_id','store_and_fwd_flag'], drop_first=True)
 
         return df
 
@@ -81,41 +65,44 @@ class PrediccionModelo(object):
 if __name__ == "__main__":
 
     categorical_features = [
-        "pickup_day", 
-        "pickup_month",
-        "pickup_hour",
-        "pickup_min",
-        "pickup_weekday",
-        "vendor_id_2",
-        "store_and_fwd_flag_Y",
+        "Sexo_Masculino", 
+        "Tipo de hogar_Departamento",
+        "Estado civil_Divorciado",
+        "Estado civil_Soltero",
+        "Estado civil_Viudo",
+        "Tipo de trabajo_Empresario",
+        "Tipo de trabajo_Independiente",
+        "Educación_Preparatoria",
+        "Educación_Universidad",
+        "Tipo de seguro_Hogar",
+        "Tipo de seguro_Salud",
+        "Tipo de seguro_Vida"
     ]
     features_to_drop = [
-        'log_trip_duration',
-        'trip_duration',
-        'id',
-        'pickup_datetime',
-        'dropoff_datetime',
-        'dropoff_min',
-        'dropoff_hour'
+        'ID del cliente',
+        'start_date',
+        'target'
     ]
 
     eval_metrics = [
-        RMSE(metric_name="RMSE",is_higher_better=False),
-        MAE(metric_name="MAE",is_higher_better=False),
-        R2_score(metric_name="r2_score",is_higher_better=True),
+        Auc(metric_name="auc"),
+        LogLoss(metric_name="log_loss"),
+        RecallAtPrecision(precision=0.9, metric_name="recall_at_precision"),
+        PrecisionAtRecall(recall=0.85, metric_name="precision_at_recall"),
+        RecallAtFpr(fpr=0.1, metric_name="recall_at_fpr"),
     ]
 
     model = PrediccionModelo(
         categorical_features=categorical_features,
         features_to_drop=features_to_drop,
         eval_metrics=eval_metrics,
-        method="minmax",
+        #method="minmax",
     )
     print("Model instantiated!")
-    df = model.load_data(table="1. New york taxi.csv")
+    df = model.load_data(table="data/out/data_proc.csv")
     
     data_vars,id = model.data_prepro(df)
     
     # command to predict from saved model
-    model_file = "model_20-05-2022_00_32_11.txt"
+    model_file = "outputs\models\model_09-03-2023_23_34_58.txt"
     model.predict(model_file, data_vars,id)

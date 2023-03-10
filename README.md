@@ -1,46 +1,58 @@
-# Data-Science-Challenge
+# Modelo de Reclamos
+Este repositorio contiene un modelo de reclamos de una compañía de seguros utilizando técnicas de data science. El objetivo del modelo es predecir si un cliente realizará un reclamo en el próximo año y utilizar esta información para tomar decisiones estratégicas.
 
-**Objetivo:**
-Desarrollar un script en Python que utilice aprendizaje automático para predecir si un cliente presentará un reclamo de seguro en el próximo año.
+## Estructura del Repositorio
+- Data: Esta carpeta contiene la data en crudo y procesada que es utilizada como entrada para el modelamiento.
 
-**Descripción:**
-La compañía aseguradora está interesada en predecir si un cliente presentará un reclamo de seguro en el próximo año para poder tomar medidas preventivas y mejorar la satisfacción del cliente. La compañía ha recopilado datos históricos de clientes y reclamos y quiere utilizarlos para desarrollar un modelo de aprendizaje automático que pueda predecir si un cliente presentará un reclamo de seguro en el próximo año.
+- Notebooks: En esta carpeta, se encuentran dos archivos. El archivo analisis_resultados.ipynb evalúa la predicción del modelo LightGBM optimizado y elabora una tabla de KS para determinar qué tan bien el modelo discrimina por decil. Es en esta tabla resumen donde se puede encontrar perfiles propensos a hacer un reclamo que podrían tener una tasa de reclamo mayor a la de toda la base. El otro archivo es el de exploratory_data.ipynb, que realiza la ingestación de la data cruda, un EDA y transformaciones de variables.
 
-**Requerimientos:**
-- Cargar los datos: Cargar los datos de clientes y reclamos históricos.
-- Preparar los datos: Preparar los datos para el análisis utilizando técnicas de limpieza de datos, ingeniería de características y codificación de variables categóricas.
-- Crear el modelo: Crear un modelo de aprendizaje automático utilizando un algoritmo de clasificación, como regresión logística o árboles de decisión, que pueda predecir si un cliente presentará un reclamo de seguro en el próximo año.
-- Hacer predicciones: Utilizar el modelo para hacer predicciones sobre si un cliente presentará un reclamo de seguro en el próximo año para nuevos datos de clientes.
-- Escribir un código en Python: Escribir el código en Python para llevar a cabo las tareas anteriores.
+- entrenamiento.py: Este archivo contiene un pipeline para entrenar un modelo LightGBM y optimizarlo según Optuna. El modelo entrenado se guarda, junto con la importancia de variables. El AUC de este modelo es 0.585.
 
-**Requisitos adicionales:**
+- outputs: Esta carpeta contiene varias subcarpetas:
 
-1. Utilizar pandas, NumPy, scikit-learn y matplotlib para realizar el análisis de datos, el modelado y la visualización.
-2. Entregable:
-3. Presenta un archivo de código en Python que incluya el código utilizado para cargar y preparar los datos, crear el modelo de aprendizaje automático, evaluar el modelo y hacer predicciones. Además, proporciona un breve informe que describa la metodología utilizada, los resultados obtenidos y las recomendaciones para mejorar el rendimiento del modelo.
+    - hyperparameter_tuning: Aquí se guarda la combinación de hiperparámetros que se usó en las iteraciones para optimizar.
 
-**Estructura de datos**
+    - imp_variables: Aquí se guarda la importancia de variables.
 
-Los datos proporcionados contienen información de clientes y reclamos históricos. Los campos incluidos son:
+    - ks: Aquí se guarda la tabla donde se saca éxitos por decil.
 
-1. ID del cliente: identificador único para cada cliente.
-2. Sexo: género del cliente (M o F).
-3. Edad: edad del cliente en años.
-4. Ingresos: ingresos anuales del cliente en dólares.
-5. Tipo de hogar: tipo de hogar del cliente (unifamiliar, multifamiliar, condominio, etc.).
-6. Estado civil: estado civil del cliente (soltero, casado, divorciado, viudo, etc.).
-7. Número de hijos: número de hijos del cliente.
-8. Puntuación de crédito: puntaje de crédito del cliente en una escala de 0 a 100.
-9. Tipo de trabajo: tipo de trabajo del cliente (empleo, autónomo, empresario, etc.).
-10. Educación: nivel de educación del cliente (escuela secundaria, universidad, posgrado, etc.).
-11. Fecha de inicio de la póliza: fecha de inicio de la póliza de seguro del cliente.
-12. Tipo de seguro: tipo de seguro que el cliente tiene (automóvil, hogar, salud, etc.).
-13. Monto del seguro: monto del seguro en dólares que el cliente tiene.
-14. Fecha del reclamo: fecha en que el cliente presentó un reclamo.
-15. Monto del reclamo: monto del reclamo presentado en dólares.
-Los datos se proporcionan en un archivo CSV con una fila por cada cliente o reclamo histórico. El archivo incluye un encabezado que describe los campos.
+    - models: Aquí se guarda el modelo en un archivo de texto.
 
+    - preds: Aquí se guardan las predicciones.
 
-*¡Buena suerte!*
+- prediction.py: Este archivo se utiliza para correr el modelo en producción.
 
+- eval_resultados.xlsx: Este archivo es utilizado para evaluar los resultados del modelo.
 
+- metrics.py: Este archivo contiene las métricas que se utilizaron para la medición del modelo LightGBM durante su optimización.
+
+- requirements.txt: Este archivo contiene las librerías utilizadas en el proyecto.
+
+## Resultados
+Se evaluaron cuatro modelos: Regresión Logística, Decision Tree Classifier, Random Forest y LightGBM. El ranking de los modelos, de mayor a menor AUC, fue el siguiente:
+
+1. Regresión Logística (AUC: 0.596)
+2. Decision Tree Classifier (AUC: 0.593)
+3. LightGBM (AUC: 0.561)
+4. Random Forest (AUC: 0.560)
+Se eligió el AUC como métrica porque permite saber si el modelo discrimina los positivos y negativos y, además, se utiliza la probabilidad para identificar propensiones y priorizar perfiles según el modelo.
+
+## Comparativo de Modelos por AUC
+
+| Modelo | AUC |
+|--------|-----|
+| Regresión Logística | 0.596 |
+| Decision Tree | 0.593 |
+| Random Forest | 0.561 |
+| LightGBM | 0.561 |
+| LightGBM Optimizado | 0.585 |
+
+Cabe mencionar que el modelo de LightGBM optimizado por Optuna se entrenó utilizando un pipeline y se guardó en la carpeta `models` dentro de la carpeta `outputs`. Además, la importancia de las variables utilizadas en este modelo se guardó en la subcarpeta `imp_variables` dentro de la misma carpeta.
+
+Si deseas reproducir los resultados, asegúrate de tener instaladas las librerías listadas en `requirements.txt`. Luego, puedes ejecutar los archivos `entrenamiento.py` y `prediction.py` para entrenar el modelo de LightGBM optimizado y realizar predicciones en producción, respectivamente.
+
+## Próximos Pasos
+- Cambiar el método de tratamiento de categorías: Se puede utilizar el mean encoding o frequency encoding.
+- Agregar más variables: Tal vez se podría agregar variables de interacciones o consultas por el seguro, tipo de venta, canales de contacto, tipo de pago, etc.
+- Afinar la definición del target: Tal vez que no sea el próximo año sino el próximo mes.
+- Tratamiento de outliers.

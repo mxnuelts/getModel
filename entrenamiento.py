@@ -203,8 +203,8 @@ class EntrenamintoModelo(object):
                                                 index = X_test.columns, 
                                                 columns = ['importance'])
         feature_importances_lgb.sort_values('importance', ascending = False, inplace = True)
-        imp_variables_filename=f"/imp_variables/importancia_variables_{now.strftime('%d-%m-%Y_%H:%M:%S')}.csv"
-        feature_importances_lgb.to_csv(os.path.join(self.path_save, imp_variables_filename))
+        #imp_variables_filename=f"/imp_variables/importancia_variables_{now.strftime('%d-%m-%Y_%H:%M:%S')}.csv"
+        feature_importances_lgb.to_csv(self.path_save+"/imp_variables/importancia_variables_v1.csv")
         
         
         # logging metric
@@ -283,8 +283,8 @@ if __name__ == "__main__":
     #model.train(X_train, y_train, X_test, y_test, params)
 
     # command for hyperparameter tuning
-    model.hyperparameter_tuning(X_train, y_train, X_test, y_test, num_trials=10)
+    #model.hyperparameter_tuning(X_train, y_train, X_test, y_test, num_trials=10)
 
     # command to predict from saved model
-    # model_file = "outputs\models\model_20-05-2022_00_32_11.txt"
-    # model.predict(model_file, X_test, y_test)
+    model_file = "outputs\models\model_09-03-2023_23_34_58.txt"
+    model.predict(model_file, X_test, y_test)
