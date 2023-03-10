@@ -56,3 +56,9 @@ Si deseas reproducir los resultados, asegúrate de tener instaladas las librerí
 - Agregar más variables: Tal vez se podría agregar variables de interacciones o consultas por el seguro, tipo de venta, canales de contacto, tipo de pago, etc.
 - Afinar la definición del target: Tal vez que no sea el próximo año sino el próximo mes.
 - Tratamiento de outliers.
+- Hacer un análisis de shap values para saber cuánto está impactado cada variable a la probabilidad y si es un impacto positivo o negativo
+- Ahora para el seguimiento del modelo podemos ver 3 cosas:
+    - AUC en el tiempo
+    - ordenamiento de tasas por deciles
+    - psi y csi para saber si cambia la distribución del target y variables independientes en el tiempo
+- Para probar el modelo, se recomienda trabajar un piloto donde se tenga un grupo de control para saber si la priorización pro modelo vs sin priorización es mejor
